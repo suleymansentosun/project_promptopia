@@ -11,6 +11,7 @@ const MyProfile = () => {
   const { data: session } = useSession();
 
   const [posts, setPosts] = useState([]);
+  const [starredPrompts, setStarredPrompts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,6 +22,17 @@ const MyProfile = () => {
     };
 
     if (session?.user.id) fetchPosts();
+
+    const fetchStarredPrompts = async () => {
+      const response = await fetch(
+        `/api/users/${session?.user.id}/starredPrompts`
+      );
+      const data = await response.json();
+
+      setStarredPrompts(data);
+    };
+
+    if (session?.user.id) fetchStarredPrompts();
   }, []);
 
   const handleEdit = (post) => {
@@ -49,7 +61,8 @@ const MyProfile = () => {
     <Profile
       name="My"
       desc="Welcome to your personalized profile page"
-      data={posts}
+      prompts={posts}
+      starredPrompts={starredPrompts}
       handleEdit={handleEdit}
       handleDelete={handleDelete}
     />

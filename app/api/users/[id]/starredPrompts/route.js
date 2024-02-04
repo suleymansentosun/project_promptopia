@@ -1,14 +1,14 @@
 import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 
-export const dynamic = "force-dynamic";
-export const GET = async (request) => {
+export const GET = async (request, { params }) => {
   try {
     await connectToDB();
 
-    const prompts = await Prompt.find({})
-      .sort("-likeCount")
-      .populate(["creator", "likes"]);
+    const prompts = await Prompt.find({ likes: params.id }).populate([
+      "creator",
+      "likes",
+    ]);
 
     return new Response(JSON.stringify(prompts), {
       status: 200,
